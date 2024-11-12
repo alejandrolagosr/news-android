@@ -1,6 +1,8 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.hilt)
+    kotlin("kapt")
 }
 
 android {
@@ -15,6 +17,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {
@@ -27,20 +33,61 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.3"
+    }
+    hilt {
+        enableAggregatingTask = true
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
 dependencies {
+    // Modules
+    implementation(project(":domain"))
+    implementation(project(":data"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    // Android Core and Kotlin
+    implementation(libs.core.ktx)
+
+    // UI
+    implementation(libs.bundles.coil.impl)
+    implementation(libs.androidx.splashscreen)
+
+    // Compose
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.compose.impl)
+
+    // DI
+    implementation(libs.bundles.hilt.impl)
+    kapt(libs.hilt.compiler)
+
+    // Testing
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.hilt.android.testing)
+
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.bundles.android.core.testing.impl)
+    androidTestImplementation(libs.bundles.android.compose.testing.impl)
+
+    kaptTest(libs.hilt.compiler)
+    kaptAndroidTest(libs.hilt.compiler)
+    debugImplementation(libs.bundles.compose.debug.impl)
+}
+
+kapt {
+    correctErrorTypes = true
 }
