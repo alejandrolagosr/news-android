@@ -12,5 +12,5 @@ data class NewsResponse(
     @SerializedName("created_at")
     val createdAt: String,
     @SerializedName("story_url")
-    val url: String?,
+    val url: String? = null,
 )

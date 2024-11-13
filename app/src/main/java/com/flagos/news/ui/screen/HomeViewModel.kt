@@ -1,6 +1,5 @@
 package com.flagos.news.ui.screen
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,12 +24,8 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchNews() = viewModelScope.launch(Dispatchers.IO) {
         getNewsByDateUseCase.invoke().collectLatest { result ->
-            Log.d("Bambino", "Status: " + result.status + " message: " + result.message)
             when (result.status) {
                 Status.SUCCESS -> {
-                    result.data?.forEach {
-                        Log.d("Bambino", "Data: $it")
-                    }
                     uiState = uiState.copy(
                         news = result.data ?: emptyList(),
                         isLoading = false,

@@ -20,7 +20,7 @@ class NewsRepositoryImpl @Inject constructor(
                 val response = newsApi.getNewsByDate()
                 if (response.isSuccessful) {
                     response.body()?.hits
-                        ?.filter { it.url != null }
+                        ?.filter { it.url.isNullOrEmpty().not() }
                         ?.map { it.toDomain() }
                         ?.let {
                             emit(Resource.success(it))
