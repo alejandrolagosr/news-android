@@ -36,31 +36,23 @@ fun NewsItems(
                 .padding(all = 5.dp)
         ) {
             Text(
-                modifier = Modifier.padding(all = 16.dp),
+                modifier = Modifier
+                    .padding(all = 16.dp)
+                    .fillMaxWidth(),
                 text = news.title,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 maxLines = TWO,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Row {
-                Text(
-                    modifier = Modifier.padding(all = 16.dp),
-                    text = news.author,
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = ONE,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    modifier = Modifier.padding(all = 16.dp),
-                    text = news.createdAt,
-                    style = MaterialTheme.typography.labelSmall,
-                    maxLines = ONE,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+            Text(
+                modifier = Modifier.padding(all = 16.dp),
+                text = "${news.author} - ${news.relativeTime}",
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = ONE,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
@@ -70,11 +62,11 @@ fun NewsItems(
 fun NewsItemsPreview() {
     NewsItems(
         news = News(
-            id = 0,
+            id = "id",
             title = "Title",
             author = "Author",
             url = "www.google.com",
-            createdAt = "23 min ago",
+            relativeTime = "23m",
         )
     )
 }

@@ -1,9 +1,9 @@
 package com.flagos.domain.model
 
 data class News(
-    val id: Int,
+    val id: String,
     val title: String,
     val author: String,
-    val url: String,
-    val createdAt: String,
+    val url: String?,
+    val relativeTime: String,
 )

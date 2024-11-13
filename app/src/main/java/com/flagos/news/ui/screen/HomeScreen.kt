@@ -1,34 +1,38 @@
 package com.flagos.news.ui.screen
 
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.flagos.domain.model.News
 import com.flagos.news.ui.components.NewsItems
 import com.flagos.news.ui.theme.DevNewsTheme
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+) {
+
+    LaunchedEffect(key1 = true) {
+        viewModel.onUIEvent(HomeViewModel.UIEvent.OnGetNews)
+    }
+
     DevNewsTheme {
-        HomeScreenContent()
+        HomeScreenContent(
+            uiState = viewModel.uiState
+        )
     }
 }
 
 @Composable
-fun HomeScreenContent() {
+fun HomeScreenContent(
+    uiState: HomeViewModel.UIState = HomeViewModel.UIState(),
+) {
     LazyColumn {
-        for (i in 0..10) {
-            item {
-                NewsItems(
-                    news = News(
-                        id = i,
-                        title = "Title $i",
-                        author = "Author $i",
-                        url = "www.google.com",
-                        createdAt = "23 min ago"
-                    )
-                )
-            }
+        items(uiState.news) { news ->
+            NewsItems(news = news)
         }
     }
 }

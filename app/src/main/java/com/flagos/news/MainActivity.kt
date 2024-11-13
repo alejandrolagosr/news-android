@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import com.flagos.news.ui.navigation.MainNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,11 +23,11 @@ class MainActivity: ComponentActivity() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                /*val navController = rememberNavController()
+                val navController = rememberNavController()
                 MainNavHost(
                     navController = navController,
-                    modifier = Modifier.padding(8.dp)
-                )*/
+                    modifier = Modifier
+                )
             }
         }
     }
