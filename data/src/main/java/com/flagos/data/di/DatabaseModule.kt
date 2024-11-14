@@ -3,6 +3,7 @@ package com.flagos.data.di
 import android.content.Context
 import androidx.room.Room
 import com.flagos.data.database.NewsDao
+import com.flagos.data.database.RemovedItemsDao
 import com.flagos.data.database.model.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -26,5 +27,10 @@ object DatabaseModule {
     @Provides
     fun provideNewsDao(database: AppDatabase): NewsDao {
         return database.newsDao()
+    }
+
+    @Provides
+    fun provideRemovedItemsDao(database: AppDatabase): RemovedItemsDao {
+        return database.removedItemsDao()
     }
 }

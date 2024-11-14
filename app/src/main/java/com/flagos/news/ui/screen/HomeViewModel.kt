@@ -1,10 +1,12 @@
 package com.flagos.news.ui.screen
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.flagos.domain.interactor.GetMarkItemAsRemovedUseCase
 import com.flagos.domain.interactor.GetNewsByDateUseCase
 import com.flagos.domain.model.News
 import com.flagos.domain.util.Status
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getNewsByDateUseCase: GetNewsByDateUseCase,
+    private val getMarkItemAsRemovedUseCase: GetMarkItemAsRemovedUseCase,
 ) : ViewModel() {
 
     var uiState by mutableStateOf(UIState())
@@ -34,6 +37,7 @@ class HomeViewModel @Inject constructor(
                         isRefreshing = false
                     )
                 }
+
                 Status.ERROR -> {
                     uiState.copy(
                         news = emptyList(),
@@ -42,6 +46,7 @@ class HomeViewModel @Inject constructor(
                         isRefreshing = false
                     )
                 }
+
                 Status.LOADING -> {
                     uiState.copy(
                         isLoading = true,
@@ -54,7 +59,10 @@ class HomeViewModel @Inject constructor(
 
     private fun removeNewsItem(newsId: String) {
         uiState = uiState.copy(news = uiState.news.filter { it.id != newsId })
-        // TODO: Remove from the repository
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("Bambino", "removeNewsItem: $newsId")
+            getMarkItemAsRemovedUseCase.invoke(newsId)
+        }
     }
 
     data class UIState(

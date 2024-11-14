@@ -1,5 +1,7 @@
 package com.flagos.domain.di
 
+import com.flagos.domain.interactor.GetMarkItemAsRemovedUseCase
+import com.flagos.domain.interactor.GetMarkItemAsRemovedUseCaseImpl
 import com.flagos.domain.interactor.GetNewsByDateUseCase
 import com.flagos.domain.interactor.GetNewsByDateUseCaseImpl
 import com.flagos.domain.repository.NewsRepository
@@ -16,4 +18,9 @@ object InteractionModule {
     fun provideGetNewsByDateUseCase(
         newsRepository: NewsRepository
     ): GetNewsByDateUseCase = GetNewsByDateUseCaseImpl(newsRepository)
+
+    @Provides
+    fun provideGetMarkItemAsRemovedUseCase(
+        newsRepository: NewsRepository
+    ): GetMarkItemAsRemovedUseCase = GetMarkItemAsRemovedUseCaseImpl(newsRepository)
 }

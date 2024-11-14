@@ -7,4 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface NewsRepository {
 
     suspend fun getNewsByDate(): Flow<Resource<List<News>>>
+
+    suspend fun markItemAsRemoved(id: String)
 }

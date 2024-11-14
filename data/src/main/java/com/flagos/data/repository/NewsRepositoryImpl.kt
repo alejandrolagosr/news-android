@@ -1,6 +1,8 @@
 package com.flagos.data.repository
 
+import android.util.Log
 import com.flagos.data.database.model.AppDatabase
+import com.flagos.data.database.model.RemovedItemEntity
 import com.flagos.data.mapper.toDomain
 import com.flagos.data.mapper.toEntity
 import com.flagos.data.networking.NewsApi
@@ -14,10 +16,11 @@ import javax.inject.Inject
 
 class NewsRepositoryImpl @Inject constructor(
     private val newsApi: NewsApi,
-    private val database: AppDatabase
+    database: AppDatabase
 ) : NewsRepository {
 
     private val newsDao = database.newsDao()
+    private val removedItemsDao = database.removedItemsDao()
 
     override suspend fun getNewsByDate(): Flow<Resource<List<News>>> {
         return flow {
@@ -27,6 +30,7 @@ class NewsRepositoryImpl @Inject constructor(
                 if (response.isSuccessful) {
                     response.body()?.hits
                         ?.filter { it.url.isNullOrEmpty().not() }
+                        ?.filterNot { isRemovedItem(it.id) }
                         ?.map { it.toDomain() }
                         ?.also { news ->
                             // Save to Room database
@@ -45,5 +49,14 @@ class NewsRepositoryImpl @Inject constructor(
                 emit(Resource.error(throwable.message.orEmpty(), cachedNews))
             }
         }
+    }
+
+    private suspend fun isRemovedItem(id: String): Boolean {
+        return removedItemsDao.isItemRemoved(id) != null
+    }
+
+    override suspend fun markItemAsRemoved(id: String) {
+        Log.d("Bambino", "markItemAsRemoved: $id")
+        removedItemsDao.insertRemovedItem(RemovedItemEntity(id))
     }
 }
