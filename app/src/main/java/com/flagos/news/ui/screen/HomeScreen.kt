@@ -1,5 +1,6 @@
 package com.flagos.news.ui.screen
 
+import WebView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,10 @@ import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,18 +30,25 @@ import com.flagos.news.ui.theme.DevNewsTheme
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
+    // State to store the selected URL for WebView
+    var selectedUrl by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(key1 = true) {
         viewModel.onUIEvent(HomeViewModel.UIEvent.OnGetNews)
     }
 
     DevNewsTheme {
-        HomeScreenContent(
-            uiState = viewModel.uiState,
-            onRetry = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnGetNews) },
-            onRefresh = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnRefreshNews) },
-            onItemRemove = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnRemovedNews(it)) }
-        )
+        if (selectedUrl != null) {
+            WebView(url = selectedUrl!!)
+        } else {
+            HomeScreenContent(
+                uiState = viewModel.uiState,
+                onRetry = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnGetNews) },
+                onRefresh = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnRefreshNews) },
+                onItemRemoved = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnRemovedNews(it)) },
+                onItemClicked = { url -> selectedUrl = url } // Set the selected URL here
+            )
+        }
     }
 }
 
@@ -46,7 +58,8 @@ fun HomeScreenContent(
     uiState: HomeViewModel.UIState = HomeViewModel.UIState(),
     onRetry: () -> Unit = {},
     onRefresh: () -> Unit = {},
-    onItemRemove: (String) -> Unit = {}
+    onItemRemoved: (String) -> Unit = {},
+    onItemClicked: (String) -> Unit = {},
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -74,7 +87,8 @@ fun HomeScreenContent(
                         items(uiState.news, key = { it.id }) { news ->
                             NewsItems(
                                 news = news,
-                                onItemRemove = { onItemRemove(news.id) }
+                                onItemRemoved = { onItemRemoved(news.id) },
+                                onItemClicked = { onItemClicked(news.url) }
                             )
                         }
                     }

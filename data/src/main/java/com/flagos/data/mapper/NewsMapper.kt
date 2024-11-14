@@ -10,5 +10,5 @@ fun NewsResponse.toDomain(): News =
         title = title,
         author = author,
         relativeTime = createdAt.toRelativeTime(),
-        url = url,
+        url = url.orEmpty(),
     )

@@ -9,7 +9,6 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -25,16 +24,16 @@ import com.flagos.domain.model.News
 private const val TWO = 2
 private const val ONE = 1
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsItems(
     modifier: Modifier = Modifier,
     news: News,
-    onItemRemove: () -> Unit = {}
+    onItemRemoved: () -> Unit = {},
+    onItemClicked: () -> Unit = {}
 ) {
     val dismissState = rememberSwipeToDismissBoxState()
     if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
-        onItemRemove()
+        onItemRemoved()
     }
 
     SwipeToDismissBox(
@@ -51,7 +50,8 @@ fun NewsItems(
         Card(
             shape = RoundedCornerShape(CornerSize(12.dp)),
             modifier = modifier.padding(all = 8.dp),
-            elevation = CardDefaults.cardElevation(3.dp)
+            elevation = CardDefaults.cardElevation(3.dp),
+            onClick = { onItemClicked() }
         ) {
             Column(
                 modifier = Modifier
