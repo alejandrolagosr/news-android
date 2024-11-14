@@ -1,9 +1,15 @@
 package com.flagos.news.ui.screen
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -27,15 +33,18 @@ fun HomeScreen(
     DevNewsTheme {
         HomeScreenContent(
             uiState = viewModel.uiState,
-            onRetry = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnGetNews) }
+            onRetry = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnGetNews) },
+            onRefresh = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnRefreshNews) },
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
     uiState: HomeViewModel.UIState = HomeViewModel.UIState(),
-    onRetry: () -> Unit = {}
+    onRetry: () -> Unit = {},
+    onRefresh: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -54,13 +63,45 @@ fun HomeScreenContent(
             }
 
             else -> {
-                LazyColumn {
-                    items(uiState.news) { news ->
-                        NewsItems(news = news)
+                PullToRefreshBox(
+                    isRefreshing = uiState.isRefreshing,
+                    onRefresh = onRefresh,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    LazyColumn {
+                        items(uiState.news) { news ->
+                            NewsItems(news = news)
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PullToRefreshBox(
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier,
+    state: PullToRefreshState = rememberPullToRefreshState(),
+    contentAlignment: Alignment = Alignment.TopStart,
+    indicator: @Composable BoxScope.() -> Unit = {
+        Indicator(
+            modifier = Modifier.align(Alignment.TopCenter),
+            isRefreshing = isRefreshing,
+            state = state
+        )
+    },
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(
+        modifier.pullToRefresh(state = state, isRefreshing = isRefreshing, onRefresh = onRefresh),
+        contentAlignment = contentAlignment
+    ) {
+        content()
+        indicator()
     }
 }
 

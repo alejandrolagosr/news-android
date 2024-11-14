@@ -22,30 +22,30 @@ class HomeViewModel @Inject constructor(
     var uiState by mutableStateOf(UIState())
         private set
 
-    private fun fetchNews() = viewModelScope.launch(Dispatchers.IO) {
+    private fun fetchNews(isRefreshing: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        uiState = uiState.copy(isRefreshing = isRefreshing)
         getNewsByDateUseCase.invoke().collectLatest { result ->
-            when (result.status) {
+            uiState = when (result.status) {
                 Status.SUCCESS -> {
-                    uiState = uiState.copy(
+                    uiState.copy(
                         news = result.data ?: emptyList(),
                         isLoading = false,
-                        errorMessage = null
+                        errorMessage = null,
+                        isRefreshing = false
                     )
                 }
-
                 Status.ERROR -> {
-                    uiState = uiState.copy(
+                    uiState.copy(
                         news = emptyList(),
                         isLoading = false,
-                        errorMessage = result.message
+                        errorMessage = result.message,
+                        isRefreshing = false
                     )
                 }
-
                 Status.LOADING -> {
-                    uiState = uiState.copy(
-                        news = emptyList(),
+                    uiState.copy(
                         isLoading = true,
-                        errorMessage = null
+                        isRefreshing = false
                     )
                 }
             }
@@ -55,16 +55,19 @@ class HomeViewModel @Inject constructor(
     data class UIState(
         val news: List<News> = emptyList(),
         val isLoading: Boolean = true,
-        val errorMessage: String? = null
+        val errorMessage: String? = null,
+        val isRefreshing: Boolean = false,
     )
 
     fun onUIEvent(uiEvent: UIEvent) {
         when (uiEvent) {
-            is UIEvent.OnGetNews -> fetchNews()
+            is UIEvent.OnGetNews -> fetchNews(false)
+            is UIEvent.OnRefreshNews -> fetchNews(true)
         }
     }
 
     sealed class UIEvent {
         object OnGetNews : UIEvent()
+        object OnRefreshNews : UIEvent()
     }
 }
