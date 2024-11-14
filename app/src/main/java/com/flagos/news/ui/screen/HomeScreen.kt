@@ -35,6 +35,7 @@ fun HomeScreen(
             uiState = viewModel.uiState,
             onRetry = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnGetNews) },
             onRefresh = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnRefreshNews) },
+            onItemRemove = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnRemovedNews(it)) }
         )
     }
 }
@@ -44,7 +45,8 @@ fun HomeScreen(
 fun HomeScreenContent(
     uiState: HomeViewModel.UIState = HomeViewModel.UIState(),
     onRetry: () -> Unit = {},
-    onRefresh: () -> Unit = {}
+    onRefresh: () -> Unit = {},
+    onItemRemove: (String) -> Unit = {}
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -69,8 +71,11 @@ fun HomeScreenContent(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     LazyColumn {
-                        items(uiState.news) { news ->
-                            NewsItems(news = news)
+                        items(uiState.news, key = { it.id }) { news ->
+                            NewsItems(
+                                news = news,
+                                onItemRemove = { onItemRemove(news.id) }
+                            )
                         }
                     }
                 }

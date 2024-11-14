@@ -52,6 +52,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun removeNewsItem(newsId: String) {
+        uiState = uiState.copy(news = uiState.news.filter { it.id != newsId })
+        // TODO: Remove from the repository
+    }
+
     data class UIState(
         val news: List<News> = emptyList(),
         val isLoading: Boolean = true,
@@ -63,11 +68,13 @@ class HomeViewModel @Inject constructor(
         when (uiEvent) {
             is UIEvent.OnGetNews -> fetchNews(false)
             is UIEvent.OnRefreshNews -> fetchNews(true)
+            is UIEvent.OnRemovedNews -> removeNewsItem(uiEvent.newsId)
         }
     }
 
     sealed class UIEvent {
         object OnGetNews : UIEvent()
         object OnRefreshNews : UIEvent()
+        data class OnRemovedNews(val newsId: String) : UIEvent()
     }
 }
