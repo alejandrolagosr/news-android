@@ -5,7 +5,6 @@ kotlin = "1.8.10"
 core-ktx = "1.9.0"
 
 # UI
-coil = "2.4.0"
 androidx-splash-screen = "1.0.1"
 
 # Compose
@@ -35,8 +34,6 @@ loggin-interceptor = "4.9.2"
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 
 # UI
-coil-kt = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
-coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidx-splash-screen" }
 
 # Compose
@@ -77,7 +74,6 @@ compose-impl = ["androidx-compose-ui", "androidx-compose-graphics", "androidx-co
 android-core-testing-impl = ["androidx-test-ext-junit", "androidx-test-ext", "androidx-espresso-core"]
 android-compose-testing-impl = ["androidx-compose-ui-test", "androidx-navigation-testing"]
 compose-debug-impl = ["androidx-compose-ui-testManifest", "androidx-compose-ui-tooling"]
-coil-impl = ["coil-kt", "coil-kt-compose"]
 hilt-impl = ["hilt-android", "hilt-navigation-compose"]
 networking-impl = ["retrofit", "converter-gson", "logging-interceptor"]
 
