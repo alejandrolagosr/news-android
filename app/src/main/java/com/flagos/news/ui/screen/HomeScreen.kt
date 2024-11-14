@@ -1,6 +1,6 @@
 package com.flagos.news.ui.screen
 
-import WebView
+import WebViewScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,14 +39,17 @@ fun HomeScreen(
 
     DevNewsTheme {
         if (selectedUrl != null) {
-            WebView(url = selectedUrl!!)
+            WebViewScreen(
+                url = selectedUrl!!,
+                onBack = { selectedUrl = null }
+            )
         } else {
             HomeScreenContent(
                 uiState = viewModel.uiState,
                 onRetry = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnGetNews) },
                 onRefresh = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnRefreshNews) },
                 onItemRemoved = { viewModel.onUIEvent(HomeViewModel.UIEvent.OnRemovedNews(it)) },
-                onItemClicked = { url -> selectedUrl = url } // Set the selected URL here
+                onItemClicked = { url -> selectedUrl = url }
             )
         }
     }
