@@ -87,7 +87,7 @@ fun HomeScreenContent(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     LazyColumn {
-                        items(uiState.news, key = { it.id }) { news ->
+                        items(uiState.news) { news ->
                             NewsItems(
                                 news = news,
                                 onItemRemoved = { onItemRemoved(news.id) },
