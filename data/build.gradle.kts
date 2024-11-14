@@ -42,6 +42,9 @@ dependencies {
 
     // DI
     implementation(libs.hilt.android)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
     kapt(libs.hilt.compiler)
 
     // Networking

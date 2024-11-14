@@ -70,7 +70,7 @@ fun NewsItems(
                 )
                 Text(
                     modifier = Modifier.padding(all = 16.dp),
-                    text = "${news.author} - ${news.relativeTime}",
+                    text = "${news.author} - ${news.timestamp}",
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = ONE,
                     overflow = TextOverflow.Ellipsis,
@@ -90,7 +90,7 @@ fun NewsItemsPreview() {
             title = "Title",
             author = "Author",
             url = "www.google.com",
-            relativeTime = "23m",
+            timestamp = "23m",
         )
     )
 }
