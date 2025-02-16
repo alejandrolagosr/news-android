@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "news-android"
+rootProject.name = "news-apply-android"
 include(":app")
 include(":domain")
 include(":data")
